@@ -17,6 +17,8 @@ import { evm_address_to_sub_address } from "../../utils/chain/address";
 import {ApiPromise,WsProvider} from "@polkadot/api";
 import SelectTokenTop from "../../components/selecttokentop";
 import Heads from "../../components/head";
+import useEthereum from "../../hooks/useEthereum";
+import {ethers} from "ethers";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -52,37 +54,59 @@ const substarte_send = async (intactWalletAddress:string) =>{
     //   .signAndSend(intactWalletAddress, { signer: injector.signer });
 }
 
-const token_transfer = async (AccountChooseValueType:number,intactWalletAddress:string) =>{
+const token_transfer = async (AccountChooseValueType:number,intactWalletAddress:string, from:string, signer: ethers.Signer | null) =>{
     if (AccountChooseValueType === 1){
         const transfer_number  = (document.getElementById('transfer') as HTMLInputElement).value
         const transfer_price_bn = new BN(transfer_number).mul(new BN('1000000000000000000'));
         const transfer_price_hex = nToHex(transfer_price_bn);
         const transfer_address  = (document.getElementById('Receiver') as HTMLInputElement).value
         console.log(transfer_price_hex)
-        let accounts = [];
+        // let accounts = [];
         // @ts-ignore
-        async function getAccount() {
-            // @ts-ignore
-            accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-            console.log(accounts)
+        // async function getAccount() {
+        //     // @ts-ignore
+        //     accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        //     console.log(accounts)
+        // }
+        // await getAccount()
+
+        if (signer && from) {
+            const gasPrice: string = '0x09184e72a000';
+            const gas: string = '0x5208'
+            const tx = {
+                transfer_address,
+                value: transfer_price_hex,
+                gasPrice,
+                gas,
+                chainId: 0x69,
+            };
+
+            try {
+                const transactionResponse = await signer.sendTransaction(tx);
+                console.log("Transaction sent. Waiting for confirmation...");
+
+                const receipt = await transactionResponse.wait();
+                console.log("Transaction confirmed:", receipt);
+            } catch (error) {
+                console.error("Error sending transaction:", error);
+            }
+
         }
-        await getAccount()
-        // @ts-ignore
-        ethereum.request({
-            method: 'eth_sendTransaction',
-            params: [
-                {
-                    from: accounts[0],
-                    to: transfer_address,
-                    value: transfer_price_hex,
-                    gasPrice: '0x09184e72a000',
-                    gas: '0x5208',
-                    chainId:0x69,
-                },
-            ],
-        })
-          .then((txHash) => console.log(txHash))
-          .catch((error) => console.error);
+        // ethereum.request({
+        //     method: 'eth_sendTransaction',
+        //     params: [
+        //         {
+        //             from: from,
+        //             to: transfer_address,
+        //             value: transfer_price_hex,
+        //             gasPrice: '0x09184e72a000',
+        //             gas: '0x5208',
+        //             chainId:0x69,
+        //         },
+        //     ],
+        // })
+        //   .then((txHash) => console.log(txHash))
+        //   .catch((error) => console.error(error));
     }else if (AccountChooseValueType === 2){
        await substarte_send(intactWalletAddress)
     }
@@ -90,6 +114,7 @@ const token_transfer = async (AccountChooseValueType:number,intactWalletAddress:
 
 const Transfer = () =>{
     const router = useRouter()
+    const ethereum = useEthereum()
     const [AccountChooseValueType,] = useAtom(AccountChooseValue)
     const [intactWalletAddress,] = useAtom(IntactWalletAddress)
     const [swapTokenTop,setSwapTokenTop] = useAtom(SwapTokenTop)
@@ -106,16 +131,14 @@ const Transfer = () =>{
             if (AccountChooseValueType === 1){
                 const query_balance = async ()=>{
                     // @ts-ignore
-                    const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-                    const account = accounts[0];
-                    const substrate = evm_address_to_sub_address(account)
+                    const substrate = evm_address_to_sub_address(ethereum.address)
                     const balance = await check_balance(substrate)
                     const unit = new BN(balance).div(new BN('10000000000000000')).toString();
                     const new_data = unit.substring(0,3)
                     const result = insertStr(new_data,1,'.')
                     setBalance(result)
                 }
-            }else{
+            } else{
                 console.log('1');
             }
         }
@@ -181,7 +204,7 @@ const Transfer = () =>{
                                         </div>
                                         <div className={WalletButtonShow  ? "mt-1": "hidden"}>
                                             <button onClick={()=>{
-                                                token_transfer(AccountChooseValueType,intactWalletAddress)
+                                                token_transfer(AccountChooseValueType,intactWalletAddress, ethereum.address, ethereum.signer)
                                             }} className="px-24 py-1.5 rounded-lg bg-indigo-400">
                                                 Transfer
                                             </button>

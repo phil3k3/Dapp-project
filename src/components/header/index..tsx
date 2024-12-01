@@ -27,24 +27,24 @@ function classNames(...classes) {
 
 const  Trident = () => {
     const navigation = [
-        // {
-        //     title: "Wallet",
-        //     contents: [
-        //         { name: 'Assets', href: '/assets', },
-        //         { name: 'Transfer', href: '/transfer',},
-        //         // { name: 'Transaction', href: '/transaction',},
-        //
-        //     ]
-        // },
+        {
+            title: "Wallet",
+            contents: [
+                { name: 'Assets\n', href: '/assets', },
+                { name: 'Transfer', href: '/transfer',},
+                // { name: 'Transaction', href: '/transaction',},
+
+            ]
+        },
         {
          title: "Dex",
          contents: [
-             { name: 'Swap', href: '/home', },
-             { name: 'Pools ', href: '/pools',},
-             { name: 'Create', href: '/create',},
-             { name: 'Bridge', href: '/bridge',},
-             { name: 'Farms', href: '/farms',},
-             { name: 'Staking', href: '/staking',},
+             { name: 'Swap\n', href: '/home', },
+             { name: 'Pools\n ', href: '/pools',},
+             { name: 'Create\n', href: '/create',},
+             { name: 'Bridge\n', href: '/bridge',},
+             { name: 'Farms\n', href: '/farms',},
+             { name: 'Staking\n', href: '/staking',},
              { name: 'Mint', href: '/defi_mint',}
          ]
         },
@@ -80,7 +80,7 @@ const  Trident = () => {
                 { name: 'Treasury', href: '/home', },
                 { name: 'Bounties', href: '/home', },
                 { name: 'Technology', href: '/home', },
-        
+
             ]
         },
         {

@@ -11,11 +11,16 @@ import {
 } from '../../jotai/index';
 import {ExclamationIcon} from "@heroicons/react/solid";
 import { address_slice } from '../../utils/chain/address';
+import {ethers} from "ethers";
+import useEthereum from "../../hooks/useEthereum";
 
 
 const Login=()=>{
   // open wallet choose list
   const [OpenWalletListState, SetOpenWalletListState] = useAtom(WalletListShowState)
+
+  const ethereum = useEthereum()
+
   // open account info
   const [,SetWalletButtonShow] = useAtom(WalletButtonShowState)
   // null = 0 evm = 1 substrate = 2
@@ -30,31 +35,25 @@ const Login=()=>{
   const [,SetIntactWalletAddress] = useAtom(IntactWalletAddress)
   // sub wallet install check
   const [InstallSubstrate,setInstallSubstrate] = useState(false)
-  // metamask wallet instal check
+  // metamask wallet install check
   const [InstallMeatMask,setInstallMeatMask] = useState(false)
   // login metamask
   async function  loginMeatMask () {
     // @ts-ignore
-   const install = await window.ethereum
-    if(install){
-      // @ts-ignore
-      const accountArray = await ethereum.request({method: 'eth_requestAccounts'});
-      if (accountArray) {
-        // set choose type evm
-        SetAccountChooseValue(1)
-        // set local address
-        const account = accountArray[0]
-        SetIntactWalletAddress(account)
-        // set show address
-        setWalletAddress(address_slice(account))
-        // close wallet choose list
-        SetOpenWalletListState(false)
-        //open wallet Button
-        SetWalletButtonShow(true)
-        // refresh page
-        location.reload();
-      }
-    }else {
+    if (ethereum.address) {
+      // set choose type evm
+      SetAccountChooseValue(1)
+      // set local address
+      SetIntactWalletAddress(ethereum.address)
+      // set show address
+      setWalletAddress(address_slice(ethereum.address))
+      // close wallet choose list
+      SetOpenWalletListState(false)
+      //open wallet Button
+      SetWalletButtonShow(true)
+      // refresh page
+      location.reload();
+    } else {
       // set account value
       SetAccountChooseValue(0)
       // metamask install page

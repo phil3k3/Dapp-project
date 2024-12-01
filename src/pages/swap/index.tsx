@@ -279,14 +279,12 @@ const Recent = ()=>{
                         </button>
                     </div>
                     <div className={WalletButtonShow ? "mt-1" : "hidden"}>
-                        <button className={classNames(requestData?"hidden":"")}>
-                        <button  className={classNames(swapTopPutValue > Number(swapTokenTop.data)?" cursor-not-allowed from-[#DB5E7F]/60  via-[#876BD2]/60 to-[#6E93E8]/60 w-64 py-1.5 text-gray-400 rounded-lg text-xl font-semibold bg-gradient-to-r":"hidden")}>
+                            <button  className={classNames(swapTopPutValue > Number(swapTokenTop.data)?" cursor-not-allowed from-[#DB5E7F]/60  via-[#876BD2]/60 to-[#6E93E8]/60 w-64 py-1.5 text-gray-400 rounded-lg text-xl font-semibold bg-gradient-to-r":"hidden")}>
                                 Swap
-                        </button>
+                            </button>
                             <button onClick={swapnow} className={classNames(swapTopPutValue > Number(swapTokenTop.data)?"hidden":"from-[#DB5E7F]  via-[#876BD2] to-[#6E93E8] w-64 py-1.5  rounded-lg text-xl font-semibold bg-gradient-to-r")}>
                                 Swap
                             </button>
-                        </button>
 
                         <button  className={classNames(requestData?"from-[#DB5E7F]/60  via-[#876BD2]/60 to-[#6E93E8]/60 cursor-not-allowed":"hidden","w-64 py-1.5 rounded-lg text-xl font-semibold bg-gradient-to-r")}>
                                 <i className="fa fa-spinner fa-pulse  fa-fw"></i>
